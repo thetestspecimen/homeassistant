@@ -67,7 +67,7 @@ blueprint:
                   value: "brightness"
                 - label: "Kelvin (Cool / Warm)"
                   value: "kelvin"
-                - label: "RGB Color (Rainbow)"
+                - label: "RGB Colour (Rainbow)"
                   value: "rgb"
                 - label: "Presets (Work / Cozy)"
                   value: "preset"
@@ -86,7 +86,7 @@ blueprint:
           default: 80
           selector: { number: { min: 1, max: 100 } }
         btn1_double_temp:
-          name: "Button 1: Double Click Color Temp (K)"
+          name: "Button 1: Double Click Colour Temp (K)"
           default: 4000
           selector: { number: { min: 2000, max: 6500 } }
         btn1_hold_bright:
@@ -94,7 +94,7 @@ blueprint:
           default: 20
           selector: { number: { min: 1, max: 100 } }
         btn1_hold_temp:
-          name: "Button 1: Hold Color Temp (K)"
+          name: "Button 1: Hold Colour Temp (K)"
           default: 2200
           selector: { number: { min: 2000, max: 6500 } }
 
@@ -134,7 +134,7 @@ blueprint:
           default: 80
           selector: { number: { min: 1, max: 100 } }
         btn2_double_temp:
-          name: "Button 2: Double Click Color Temp (K)"
+          name: "Button 2: Double Click Colour Temp (K)"
           default: 4000
           selector: { number: { min: 2000, max: 6500 } }
         btn2_hold_bright:
@@ -142,7 +142,7 @@ blueprint:
           default: 20
           selector: { number: { min: 1, max: 100 } }
         btn2_hold_temp:
-          name: "Button 2: Hold Color Temp (K)"
+          name: "Button 2: Hold Colour Temp (K)"
           default: 2200
           selector: { number: { min: 2000, max: 6500 } }
 
@@ -182,7 +182,7 @@ blueprint:
           default: 80
           selector: { number: { min: 1, max: 100 } }
         btn3_double_temp:
-          name: "Button 3: Double Click Color Temp (K)"
+          name: "Button 3: Double Click Colour Temp (K)"
           default: 4000
           selector: { number: { min: 2000, max: 6500 } }
         btn3_hold_bright:
@@ -190,7 +190,7 @@ blueprint:
           default: 20
           selector: { number: { min: 1, max: 100 } }
         btn3_hold_temp:
-          name: "Button 3: Hold Color Temp (K)"
+          name: "Button 3: Hold Colour Temp (K)"
           default: 2200
           selector: { number: { min: 2000, max: 6500 } }
     
@@ -221,24 +221,28 @@ blueprint:
           selector: { number: { min: 5, max: 90, unit_of_measurement: "°" } }
 
     group_values:
-      name: "Values"
+      name: "Preset Values"
       icon: "mdi:brightness-6"
       collapsed: true
       input:
         val_bright:
-          name: "Value: Bright (%)"
+          name: "Work: Brightness (%)"
+          description: "The brightness value to use for the 'Work' preset"
           default: 80
           selector: { number: { min: 1, max: 100 } }
-        val_dim:
-          name: "Value: Dim (%)"
-          default: 20
-          selector: { number: { min: 1, max: 100 } }
         val_cold:
-          name: "Value: Cool (K)"
+          name: "Work: Colour Temperature (K)"
+          description: "The colour temperature value to use for the 'Work' preset"
           default: 4000
           selector: { number: { min: 2000, max: 6500 } }
+        val_dim:
+          name: "Cozy: Brightness (%)"
+          description: "The brightness value to use for the 'Cozy' preset"
+          default: 20
+          selector: { number: { min: 1, max: 100 } }
         val_warm:
-          name: "Value: Warm (K)"
+          name: "Cozy: Colour Temperature (K)"
+          description: "The colour temperature value to use for the 'Cozy' preset"
           default: 2200
           selector: { number: { min: 2000, max: 6500 } }
 
@@ -408,11 +412,11 @@ actions:
                   - action: light.turn_on
                     target: { entity_id: "{{ target_light }}" }
                     data:
-                      color_temp_kelvin: >
-                        {% set current = state_attr(target_light, 'color_temp_kelvin') | int(default=3000) %}
+                      colour_temp_kelvin: >
+                        {% set current = state_attr(target_light, 'colour_temp_kelvin') | int(default=3000) %}
                         {% set step = s_k | int(default=400) %}
-                        {% set min_k = state_attr(target_light, 'min_color_temp_kelvin') | int(default=2000) %}
-                        {% set max_k = state_attr(target_light, 'max_color_temp_kelvin') | int(default=6500) %}
+                        {% set min_k = state_attr(target_light, 'min_colour_temp_kelvin') | int(default=2000) %}
+                        {% set max_k = state_attr(target_light, 'max_colour_temp_kelvin') | int(default=6500) %}
                         {% if direction == 1 %} {{ ([current + step, max_k] | min) | int }}
                         {% else %} {{ ([current - step, min_k] | max) | int }} {% endif %}
                       transition: 0
@@ -422,8 +426,8 @@ actions:
                   - action: light.turn_on
                     target: { entity_id: "{{ target_light }}" }
                     data:
-                      hs_color: >
-                        {% set current_hs = state_attr(target_light, 'hs_color') %}
+                      hs_colour: >
+                        {% set current_hs = state_attr(target_light, 'hs_colour') %}
                         {% set h = current_hs[0] | float(default=0) if current_hs is not none else 0 %}
                         {% set s = current_hs[1] | float(default=100) if current_hs is not none else 100 %}
                         {% set step = s_h | float(default=15) %}
@@ -436,7 +440,7 @@ actions:
                     target: { entity_id: "{{ target_light }}" }
                     data:
                       brightness_pct: "{{ v_bri if direction == 1 else v_dim }}"
-                      color_temp_kelvin: "{{ v_cold if direction == 1 else v_warm }}"
+                      colour_temp_kelvin: "{{ v_cold if direction == 1 else v_warm }}"
                       transition: 1
 
   # ==========================================================
@@ -483,7 +487,7 @@ actions:
                     target: { entity_id: "{{ target_light }}" }
                     data:
                       brightness_pct: "{{ set_bri }}"
-                      color_temp_kelvin: "{{ set_temp }}"
+                      colour_temp_kelvin: "{{ set_temp }}"
                       transition: "{{ t_time }}"
 
           # --- 3. HOLD (CUSTOM) ---
@@ -508,7 +512,7 @@ actions:
                     target: { entity_id: "{{ target_light }}" }
                     data:
                       brightness_pct: "{{ set_bri }}"
-                      color_temp_kelvin: "{{ set_temp }}"
+                      colour_temp_kelvin: "{{ set_temp }}"
                       transition: "{{ t_time }}"
 
   # V2.0.0+ FIX: Force a 150ms dead-time only after button presses to ignore bouncing, skipping scroll events
