@@ -33,13 +33,23 @@ blueprint:
   input:
 
     # ==========================================================
+    # 0. GLOBAL LIGHT
+    # ==========================================================
+    
+    global_light:
+      name: Global Light (Default)
+      description: This light will be used for any zone or button that does not have a specific override light set below.
+      selector: { entity: { domain: light } }
+
+    # ==========================================================
     # 1. SCROLL ZONES (SENSORS)
     # ==========================================================
     
     # --- SCROLL ZONE 1 (SENSORS 1 & 2) ---
 
     light_z1:
-      name: Light (Scroll Zone 1)
+      name: Light (Scroll Zone 1) - Optional Override
+      default: ""
       selector: { entity: { domain: light } }
     
     scroll_logic_1_2:
@@ -60,7 +70,8 @@ blueprint:
     # --- SCROLL ZONE 2 (SENSORS 4 & 5) ---
 
     light_z2:
-      name: Light (Scroll Zone 2)
+      name: Light (Scroll Zone 2) - Optional Override
+      default: ""
       selector: { entity: { domain: light } }
 
     scroll_logic_4_5:
@@ -71,7 +82,8 @@ blueprint:
     # --- SCROLL ZONE 3 (SENSORS 7 & 8) ---
 
     light_z3:
-      name: Light (Scroll Zone 3)
+      name: Light (Scroll Zone 3) - Optional Override
+      default: ""
       selector: { entity: { domain: light } }
 
     scroll_logic_7_8:
@@ -86,7 +98,8 @@ blueprint:
     # --- BUTTON 1 (LEFT) ---
 
     light_b1:
-      name: Light (Button 1)
+      name: Light (Button 1) - Optional Override
+      default: ""
       selector: { entity: { domain: light } }
 
     btn1_double:
@@ -124,7 +137,8 @@ blueprint:
     # --- BUTTON 2 (MIDDLE) ---
     
     light_b2:
-      name: Light (Button 2)
+      name: Light (Button 2) - Optional Override
+      default: ""
       selector: { entity: { domain: light } }
 
     btn2_double:
@@ -140,7 +154,8 @@ blueprint:
     # --- BUTTON 3 (RIGHT) ---
 
     light_b3:
-      name: Light (Button 3)
+      name: Light (Button 3) - Optional Override
+      default: ""
       selector: { entity: { domain: light } }
 
     btn3_double:
@@ -227,6 +242,7 @@ mode: single
 max_exceeded: silent
 
 variables:
+  global_l: !input global_light
   l_z1: !input light_z1
   l_z2: !input light_z2
   l_z3: !input light_z3
@@ -311,9 +327,9 @@ actions:
           # Setup Logic
           - variables:
               target_light: >
-                {% if 'sc_1' in trigger.id %} {{ l_z1 }}
-                {% elif 'sc_2' in trigger.id %} {{ l_z2 }}
-                {% elif 'sc_3' in trigger.id %} {{ l_z3 }}
+                {% if 'sc_1' in trigger.id %} {{ l_z1 if l_z1 else global_l }}
+                {% elif 'sc_2' in trigger.id %} {{ l_z2 if l_z2 else global_l }}
+                {% elif 'sc_3' in trigger.id %} {{ l_z3 if l_z3 else global_l }}
                 {% endif %}
               direction: >
                 {% if '_up' in trigger.id %} 1
@@ -379,9 +395,9 @@ actions:
         sequence:
           - variables:
               target_light: >
-                {% if trigger.entity_id == id_e1 %} {{ l_b1 }}
-                {% elif trigger.entity_id == id_e2 %} {{ l_b2 }}
-                {% elif trigger.entity_id == id_e3 %} {{ l_b3 }}
+                {% if trigger.entity_id == id_e1 %} {{ l_b1 if l_b1 else global_l }}
+                {% elif trigger.entity_id == id_e2 %} {{ l_b2 if l_b2 else global_l }}
+                {% elif trigger.entity_id == id_e3 %} {{ l_b3 if l_b3 else global_l }}
                 {% endif %}
           # --- 1. SINGLE CLICK (ALWAYS TOGGLE) ---
           - choose:
