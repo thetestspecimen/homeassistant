@@ -1,9 +1,12 @@
 blueprint:
-  name: "IKEA Bilresa Scrollwheel - Light Control V1.0.5"
+  name: "IKEA Bilresa Scrollwheel - Light Control V2.0.0"
+  author: "thetestspecimen"
+  source_url: "https://github.com/thetestspecimen/homeassistant/blob/main/blueprints/ikea-bilresa-scroll-wheel.yaml"
   description: >
     The ultimate LIGHT controller for the IKEA Bilresa Smart Scroll Wheel via Matter.
     (NOT for Media/Volume! NOT for the 2-Button Remote!)
     
+    VERSION 2.0.0: Implemented optimizations for scrolling and entity selections.
     VERSION 1.0.5: Included fix to check both the from_state and the to_state.
     VERSION 1.0.4: Code cleanup. Removed 'short_release' placebo for multi_press events.
     VERSION 1.0.3: Bugfix: Fixed "ghost switching" after Home Assistant restarts.
@@ -148,37 +151,42 @@ blueprint:
       default: 2200
       selector: { number: { min: 2000, max: 6500 } }
 
+    transition_time:
+      name: "Button Transition Time (Seconds)"
+      default: 0.5
+      selector: { number: { min: 0.0, max: 5.0, step: 0.1 } }
+
     # ==========================================================
     # 4. ENTITY MAPPING
     # ==========================================================
     sensor_1:
       name: "Sensor 1 (Look for '(1)')"
-      selector: { entity: { domain: sensor } }
+      selector: { entity: { domain: sensor, integration: matter } }
     sensor_2:
       name: "Sensor 2 (Look for '(2)')"
-      selector: { entity: { domain: sensor } }
+      selector: { entity: { domain: sensor, integration: matter } }
     sensor_4:
       name: "Sensor 4 (Look for '(4)')"
-      selector: { entity: { domain: sensor } }
+      selector: { entity: { domain: sensor, integration: matter } }
     sensor_5:
       name: "Sensor 5 (Look for '(5)')"
-      selector: { entity: { domain: sensor } }
+      selector: { entity: { domain: sensor, integration: matter } }
     sensor_7:
       name: "Sensor 7 (Look for '(7)')"
-      selector: { entity: { domain: sensor } }
+      selector: { entity: { domain: sensor, integration: matter } }
     sensor_8:
       name: "Sensor 8 (Look for '(8)')"
-      selector: { entity: { domain: sensor } }
+      selector: { entity: { domain: sensor, integration: matter } }
 
-    event_taste_1:
+    event_button_1:
       name: "Event Button 1 (Look for '(3)')"
-      selector: { entity: { domain: event } }
-    event_taste_2:
+      selector: { entity: { domain: event, integration: matter } }
+    event_button_2:
       name: "Event Button 2 (Look for '(6)')"
-      selector: { entity: { domain: event } }
-    event_taste_3:
+      selector: { entity: { domain: event, integration: matter } }
+    event_button_3:
       name: "Event Button 3 (Look for '(9)')"
-      selector: { entity: { domain: event } }
+      selector: { entity: { domain: event, integration: matter } }
 
 mode: single
 max_exceeded: silent
@@ -209,9 +217,10 @@ variables:
   v_warm: !input val_warm
 
   # Event IDs
-  id_e1: !input event_taste_1
-  id_e2: !input event_taste_2
-  id_e3: !input event_taste_3
+  id_e1: !input event_button_1
+  id_e2: !input event_button_2
+  id_e3: !input event_button_3
+  t_time: !input transition_time
 
 triggers:
   # Scroll 1
@@ -239,9 +248,9 @@ triggers:
   # Buttons
   - trigger: state
     entity_id: 
-      - !input event_taste_1
-      - !input event_taste_2
-      - !input event_taste_3
+      - !input event_button_1
+      - !input event_button_2
+      - !input event_button_3
     id: btn_event
 
 conditions:
@@ -328,7 +337,7 @@ actions:
                 sequence:
                   - action: light.toggle
                     target: { entity_id: "{{ target_light }}" }
-                    data: { transition: 0.5 }
+                    data: { transition: "{{ t_time }}" }
 
           # --- 2. DOUBLE CLICK (CUSTOM) ---
           - choose:
@@ -348,22 +357,22 @@ actions:
                         sequence:
                           - action: light.turn_on
                             target: { entity_id: "{{ target_light }}" }
-                            data: { brightness_pct: "{{ v_bri }}", transition: 0.5 }
+                            data: { brightness_pct: "{{ v_bri }}", transition: "{{ t_time }}" }
                       - conditions: "{{ action_code == 'set_cold' }}"
                         sequence:
                           - action: light.turn_on
                             target: { entity_id: "{{ target_light }}" }
-                            data: { color_temp_kelvin: "{{ v_cold }}", transition: 0.5 }
+                            data: { color_temp_kelvin: "{{ v_cold }}", transition: "{{ t_time }}" }
                       - conditions: "{{ action_code == 'set_white' }}"
                         sequence:
                           - action: light.turn_on
                             target: { entity_id: "{{ target_light }}" }
-                            data: { color_temp_kelvin: 4000, transition: 0.5 }
+                            data: { color_temp_kelvin: 4000, transition: "{{ t_time }}" }
                       - conditions: "{{ action_code == 'set_red' }}"
                         sequence:
                           - action: light.turn_on
                             target: { entity_id: "{{ target_light }}" }
-                            data: { hs_color: [0, 100], brightness_pct: 80, transition: 0.5 }
+                            data: { hs_color: [0, 100], brightness_pct: 80, transition: "{{ t_time }}" }
 
           # --- 3. HOLD (CUSTOM) ---
           - choose:
@@ -383,18 +392,21 @@ actions:
                         sequence:
                           - action: light.turn_on
                             target: { entity_id: "{{ target_light }}" }
-                            data: { brightness_pct: "{{ v_dim }}", transition: 0.5 }
+                            data: { brightness_pct: "{{ v_dim }}", transition: "{{ t_time }}" }
                       - conditions: "{{ action_code == 'set_warm' }}"
                         sequence:
                           - action: light.turn_on
                             target: { entity_id: "{{ target_light }}" }
-                            data: { color_temp_kelvin: "{{ v_warm }}", transition: 0.5 }
+                            data: { color_temp_kelvin: "{{ v_warm }}", transition: "{{ t_time }}" }
                       - conditions: "{{ action_code == 'set_color_on' }}"
                         sequence:
                           - action: light.turn_on
                             target: { entity_id: "{{ target_light }}" }
-                            data: { hs_color: [0, 100], brightness_pct: 80, transition: 0.5 }
+                            data: { hs_color: [0, 100], brightness_pct: 80, transition: "{{ t_time }}" }
 
-  # V1.0.1+ FIX: Force a 150ms dead-time after ANY action to ignore switch bouncing
-  - delay:
-      milliseconds: 150
+  # V2.0.0+ FIX: Force a 150ms dead-time only after button presses to ignore bouncing, skipping scroll events
+  - choose:
+      - conditions: "{{ trigger.id == 'btn_event' }}"
+        sequence:
+          - delay:
+              milliseconds: 150
