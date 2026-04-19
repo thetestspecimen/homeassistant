@@ -6,6 +6,7 @@ blueprint:
     Light controller for the IKEA Bilresa Smart Scroll Wheel via Matter.
     (NOT for Media/Volume! NOT for the 2-Button Remote!)
     
+    VERSION 2.0.1: Allow specific light for each button and scroll wheel zone.
     VERSION 2.0.0: Implemented optimizations for scrolling and entity selections.
     VERSION 1.0.5: Included fix to check both the from_state and the to_state.
     VERSION 1.0.4: Code cleanup. Removed 'short_release' placebo for multi_press events.
@@ -30,13 +31,17 @@ blueprint:
     
   domain: automation
   input:
-    light_entity:
-      name: Light (or Group)
-      selector: { entity: { domain: light } }
-    
+
     # ==========================================================
     # 1. SCROLL ZONES (SENSORS)
     # ==========================================================
+    
+    # --- SCROLL ZONE 1 (SENSORS 1 & 2) ---
+
+    light_z1:
+      name: Light (Scroll Zone 1)
+      selector: { entity: { domain: light } }
+    
     scroll_logic_1_2:
       name: "Scroll Zone 1 (Sensors 1 & 2)"
       default: "brightness"
@@ -52,10 +57,22 @@ blueprint:
             - label: "Presets (Work / Cozy)"
               value: "preset"
 
+    # --- SCROLL ZONE 2 (SENSORS 4 & 5) ---
+
+    light_z2:
+      name: Light (Scroll Zone 2)
+      selector: { entity: { domain: light } }
+
     scroll_logic_4_5:
       name: "Scroll Zone 2 (Sensors 4 & 5)"
       default: "kelvin"
       selector: *scroll_options
+
+    # --- SCROLL ZONE 3 (SENSORS 7 & 8) ---
+
+    light_z3:
+      name: Light (Scroll Zone 3)
+      selector: { entity: { domain: light } }
 
     scroll_logic_7_8:
       name: "Scroll Zone 3 (Sensors 7 & 8)"
@@ -66,7 +83,12 @@ blueprint:
     # 2. BUTTON CONFIGURATION (ATOMIC)
     # ==========================================================
     
-    # --- BUTTON 1 (LEFT/TOP) ---
+    # --- BUTTON 1 (LEFT) ---
+
+    light_b1:
+      name: Light (Button 1)
+      selector: { entity: { domain: light } }
+
     btn1_double:
       name: "Button 1: Double Click Action"
       default: "set_bright"
@@ -100,6 +122,11 @@ blueprint:
               value: "none"
 
     # --- BUTTON 2 (MIDDLE) ---
+    
+    light_b2:
+      name: Light (Button 2)
+      selector: { entity: { domain: light } }
+
     btn2_double:
       name: "Button 2: Double Click Action"
       default: "set_cold"
@@ -110,7 +137,12 @@ blueprint:
       default: "set_warm"
       selector: *hold_options
 
-    # --- BUTTON 3 (RIGHT/BOTTOM) ---
+    # --- BUTTON 3 (RIGHT) ---
+
+    light_b3:
+      name: Light (Button 3)
+      selector: { entity: { domain: light } }
+
     btn3_double:
       name: "Button 3: Double Click Action"
       default: "set_bright"
@@ -195,7 +227,12 @@ mode: single
 max_exceeded: silent
 
 variables:
-  target_light: !input light_entity
+  l_z1: !input light_z1
+  l_z2: !input light_z2
+  l_z3: !input light_z3
+  l_b1: !input light_b1
+  l_b2: !input light_b2
+  l_b3: !input light_b3
   
   # Scroll Logic
   m_sc_1: !input scroll_logic_1_2
@@ -273,6 +310,11 @@ actions:
         sequence:
           # Setup Logic
           - variables:
+              target_light: >
+                {% if 'sc_1' in trigger.id %} {{ l_z1 }}
+                {% elif 'sc_2' in trigger.id %} {{ l_z2 }}
+                {% elif 'sc_3' in trigger.id %} {{ l_z3 }}
+                {% endif %}
               direction: >
                 {% if '_up' in trigger.id %} 1
                 {% else %} -1
@@ -335,6 +377,12 @@ actions:
   - choose:
       - conditions: "{{ trigger.id == 'btn_event' }}"
         sequence:
+          - variables:
+              target_light: >
+                {% if trigger.entity_id == id_e1 %} {{ l_b1 }}
+                {% elif trigger.entity_id == id_e2 %} {{ l_b2 }}
+                {% elif trigger.entity_id == id_e3 %} {{ l_b3 }}
+                {% endif %}
           # --- 1. SINGLE CLICK (ALWAYS TOGGLE) ---
           - choose:
               - conditions: >
