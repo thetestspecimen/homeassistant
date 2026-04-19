@@ -115,11 +115,12 @@ blueprint:
       collapsed: true
       input:
         light_z1:
-          name: Light (Scroll Zone 1) - Optional Override
+          name: Light (Scroll - Channel 1) - Optional Override
           default: ""
           selector: { entity: { domain: light } }
         scroll_logic_1_2:
-          name: "Scroll Zone 1 (Sensors 1 & 2)"
+          name: "Scroll - Channel 1"
+          description: "Sensors 1 & 2"
           default: "brightness"
           selector: &scroll_options
             select:
@@ -173,11 +174,12 @@ blueprint:
       collapsed: true
       input:
         light_z2:
-          name: Light (Scroll Zone 2) - Optional Override
+          name: Light (Scroll - Channel 2) - Optional Override
           default: ""
           selector: { entity: { domain: light } }
         scroll_logic_4_5:
-          name: "Scroll Zone 2 (Sensors 4 & 5)"
+          name: "Scroll - Channel 2"
+          description: "Sensors 4 & 5"
           default: "kelvin"
           selector: *scroll_options
           
@@ -221,11 +223,12 @@ blueprint:
       collapsed: true
       input:
         light_z3:
-          name: Light (Scroll Zone 3) - Optional Override
+          name: Light (Scroll - Channel 3) - Optional Override
           default: ""
           selector: { entity: { domain: light } }
         scroll_logic_7_8:
-          name: "Scroll Zone 3 (Sensors 7 & 8)"
+          name: "Scroll - Channel 3"
+          description: "Sensors 7 & 8"
           default: "preset"
           selector: *scroll_options
 
