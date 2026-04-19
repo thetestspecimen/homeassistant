@@ -261,7 +261,8 @@ conditions:
     value_template: >-
       {{ trigger.from_state is defined and trigger.to_state is defined and
          trigger.from_state.state not in ['unknown', 'unavailable'] and
-         trigger.to_state.state not in ['unknown', 'unavailable'] }}
+         trigger.to_state.state not in ['unknown', 'unavailable'] and
+         trigger.from_state.state != trigger.to_state.state }}
 
 actions:
   # ==========================================================
@@ -300,8 +301,10 @@ actions:
                       color_temp_kelvin: >
                         {% set current = state_attr(target_light, 'color_temp_kelvin') | int(default=3000) %}
                         {% set step = s_k | int(default=400) %}
-                        {% if direction == 1 %} {{ ([current + step, 6500] | min) | int }}
-                        {% else %} {{ ([current - step, 2000] | max) | int }} {% endif %}
+                        {% set min_k = state_attr(target_light, 'min_color_temp_kelvin') | int(default=2000) %}
+                        {% set max_k = state_attr(target_light, 'max_color_temp_kelvin') | int(default=6500) %}
+                        {% if direction == 1 %} {{ ([current + step, max_k] | min) | int }}
+                        {% else %} {{ ([current - step, min_k] | max) | int }} {% endif %}
                       transition: 0
               
               - conditions: "{{ active_func == 'rgb' }}"
