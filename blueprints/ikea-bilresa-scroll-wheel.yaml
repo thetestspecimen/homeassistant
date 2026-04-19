@@ -2,30 +2,27 @@ blueprint:
   name: "IKEA Bilresa Scrollwheel - Light Control"
   author: "thetestspecimen"
   source_url: "https://github.com/thetestspecimen/homeassistant/blob/main/blueprints/ikea-bilresa-scroll-wheel.yaml"
-  description: >
+  description: |
+    
     Light controller for the IKEA Bilresa Smart Scroll Wheel via Matter.
-    (NOT for Media/Volume! NOT for the 2-Button Remote!)
+    (Cannot be used with the 2-Button Remote!)
     
-    VERSION 2.0.1: Allow specific light for each button and scroll wheel zone.
-    VERSION 2.0.0: Implemented optimizations for scrolling and entity selections.
-    VERSION 1.0.5: Included fix to check both the from_state and the to_state.
-    VERSION 1.0.4: Code cleanup. Removed 'short_release' placebo for multi_press events.
-    VERSION 1.0.3: Bugfix: Fixed "ghost switching" after Home Assistant restarts.
-    VERSION 1.0.2: Safety update. Added template fallbacks for RGB/Kelvin shifts.
-    VERSION 1.0.1: Fixed "Bouncing/Jumping" issues (added debounce logic).
-    
-    YOU DECIDE EVERYTHING:
+    VARIABLES:
     - 3 Scroll Zones: Choose the function (Brightness, Kelvin, RGB, Presets).
-    - 3 Buttons x 2 Gestures: Choose a specific action for EACH gesture (Double/Hold).
+    - 3 Buttons x 2 Gestures: Choose a specific action for EACH gesture (double click / hold).
+
+    Note: single click will always turn the light on or off (toggle).
     
     REQUIREMENTS:
 
+    For optimal behavior, the following settings must be applied:
     - ENABLE Events: 3,6,9 (in section "Events")
     - ENABLE Sensors: 1,2,4,5,7,8 (in section "Diagnostic")
     - DISABLE Events: 1,2,4,5,7,8 (in section "Events")
     - DISABLE Sensors: 3,6,9 (in section "Diagnostic")
     
     HELPER GROUP:
+
     If controlling multiple lights, please always use a HELPER GROUP!
     Directly controlling multiple entities can cause sync issues.
     
@@ -35,8 +32,72 @@ blueprint:
   # 0. GLOBAL LIGHT
   # ==========================================================
   input:
+    # --- ENTITY MAPPING ---
+    header_0:
+      name: "Entity Mapping [REQUIRED]"
+      description: "Select the entities for the scroll wheel and buttons"
+      default: ""
+      selector:
+        constant:
+          value: ""
+
+    group_buttons:
+      name: "Buttons"
+      icon: "mdi:gesture-tap"
+      collapsed: true
+      input:
+        event_button_1:
+          name: "Channel 1: Button"
+          description: "Event: Look for 'Button (3)'"
+          selector: { entity: { domain: event, integration: matter } }
+        event_button_2:
+          name: "Channel 2: Button"
+          description: "Event: Look for 'Button (6)'"
+          selector: { entity: { domain: event, integration: matter } }
+        event_button_3:
+          name: "Channel 3: Button"
+          description: "Event: Look for 'Button (9)'"
+          selector: { entity: { domain: event, integration: matter } }
+
+    group_scroll_wheel:
+      name: "Scroll Wheel"
+      icon: "mdi:rotate-right"
+      collapsed: true
+      input:
+        sensor_1:
+          name: "Channel 1: Scroll forwards"
+          description: "Sensor: Look for 'Current switch position (1)'"
+          selector: { entity: { domain: sensor, integration: matter } }
+        sensor_2:
+          name: "Channel 1: Scroll backwards"
+          description: "Sensor: Look for 'Current switch position (2)'"
+          selector: { entity: { domain: sensor, integration: matter } }
+        sensor_4:
+          name: "Channel 2: Scroll forwards"
+          description: "Sensor: Look for 'Current switch position (4)'"
+          selector: { entity: { domain: sensor, integration: matter } }
+        sensor_5:
+          name: "Channel 2: Scroll backwards"
+          description: "Sensor: Look for 'Current switch position (5)'"
+          selector: { entity: { domain: sensor, integration: matter } }
+        sensor_7:
+          name: "Channel 3: Scroll forwards"
+          description: "Sensor: Look for 'Current switch position (7)'"
+          selector: { entity: { domain: sensor, integration: matter } }
+        sensor_8:
+          name: "Channel 3: Scroll backwards"
+          description: "Sensor: Look for 'Current switch position (8)'"
+          selector: { entity: { domain: sensor, integration: matter } }
+
+    header_00:
+      name: "Default Light"
+      default: ""
+      selector:
+        constant:
+          value: ""
+    
     global_light:
-      name: Global Light (Default)
+      name: Global Light - Default [REQUIRED]
       description: This light will be used for any zone or button that does not have a specific override light set below.
       selector: { entity: { domain: light } }
 
@@ -256,38 +317,6 @@ blueprint:
           default: 0.5
           selector: { number: { min: 0.0, max: 5.0, step: 0.1 } }
 
-    # ==========================================================
-    # 4. ENTITY MAPPING
-    # ==========================================================
-    sensor_1:
-      name: "Sensor 1 (Look for '(1)')"
-      selector: { entity: { domain: sensor, integration: matter } }
-    sensor_2:
-      name: "Sensor 2 (Look for '(2)')"
-      selector: { entity: { domain: sensor, integration: matter } }
-    sensor_4:
-      name: "Sensor 4 (Look for '(4)')"
-      selector: { entity: { domain: sensor, integration: matter } }
-    sensor_5:
-      name: "Sensor 5 (Look for '(5)')"
-      selector: { entity: { domain: sensor, integration: matter } }
-    sensor_7:
-      name: "Sensor 7 (Look for '(7)')"
-      selector: { entity: { domain: sensor, integration: matter } }
-    sensor_8:
-      name: "Sensor 8 (Look for '(8)')"
-      selector: { entity: { domain: sensor, integration: matter } }
-
-    event_button_1:
-      name: "Event Button 1 (Look for '(3)')"
-      selector: { entity: { domain: event, integration: matter } }
-    event_button_2:
-      name: "Event Button 2 (Look for '(6)')"
-      selector: { entity: { domain: event, integration: matter } }
-    event_button_3:
-      name: "Event Button 3 (Look for '(9)')"
-      selector: { entity: { domain: event, integration: matter } }
-
 mode: single
 max_exceeded: silent
 
@@ -412,11 +441,11 @@ actions:
                   - action: light.turn_on
                     target: { entity_id: "{{ target_light }}" }
                     data:
-                      colour_temp_kelvin: >
-                        {% set current = state_attr(target_light, 'colour_temp_kelvin') | int(default=3000) %}
+                      color_temp_kelvin: >
+                        {% set current = state_attr(target_light, 'color_temp_kelvin') | int(default=3000) %}
                         {% set step = s_k | int(default=400) %}
-                        {% set min_k = state_attr(target_light, 'min_colour_temp_kelvin') | int(default=2000) %}
-                        {% set max_k = state_attr(target_light, 'max_colour_temp_kelvin') | int(default=6500) %}
+                        {% set min_k = state_attr(target_light, 'min_color_temp_kelvin') | int(default=2000) %}
+                        {% set max_k = state_attr(target_light, 'max_color_temp_kelvin') | int(default=6500) %}
                         {% if direction == 1 %} {{ ([current + step, max_k] | min) | int }}
                         {% else %} {{ ([current - step, min_k] | max) | int }} {% endif %}
                       transition: 0
@@ -426,8 +455,8 @@ actions:
                   - action: light.turn_on
                     target: { entity_id: "{{ target_light }}" }
                     data:
-                      hs_colour: >
-                        {% set current_hs = state_attr(target_light, 'hs_colour') %}
+                      hs_color: >
+                        {% set current_hs = state_attr(target_light, 'hs_color') %}
                         {% set h = current_hs[0] | float(default=0) if current_hs is not none else 0 %}
                         {% set s = current_hs[1] | float(default=100) if current_hs is not none else 100 %}
                         {% set step = s_h | float(default=15) %}
@@ -440,7 +469,7 @@ actions:
                     target: { entity_id: "{{ target_light }}" }
                     data:
                       brightness_pct: "{{ v_bri if direction == 1 else v_dim }}"
-                      colour_temp_kelvin: "{{ v_cold if direction == 1 else v_warm }}"
+                      color_temp_kelvin: "{{ v_cold if direction == 1 else v_warm }}"
                       transition: 1
 
   # ==========================================================
@@ -487,7 +516,7 @@ actions:
                     target: { entity_id: "{{ target_light }}" }
                     data:
                       brightness_pct: "{{ set_bri }}"
-                      colour_temp_kelvin: "{{ set_temp }}"
+                      color_temp_kelvin: "{{ set_temp }}"
                       transition: "{{ t_time }}"
 
           # --- 3. HOLD (CUSTOM) ---
@@ -512,7 +541,7 @@ actions:
                     target: { entity_id: "{{ target_light }}" }
                     data:
                       brightness_pct: "{{ set_bri }}"
-                      colour_temp_kelvin: "{{ set_temp }}"
+                      color_temp_kelvin: "{{ set_temp }}"
                       transition: "{{ t_time }}"
 
   # V2.0.0+ FIX: Force a 150ms dead-time only after button presses to ignore bouncing, skipping scroll events
