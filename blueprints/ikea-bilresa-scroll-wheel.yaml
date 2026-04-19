@@ -1,9 +1,9 @@
 blueprint:
-  name: "IKEA Bilresa Scrollwheel - Light Control V2.0.0"
+  name: "IKEA Bilresa Scrollwheel - Light Control"
   author: "thetestspecimen"
   source_url: "https://github.com/thetestspecimen/homeassistant/blob/main/blueprints/ikea-bilresa-scroll-wheel.yaml"
   description: >
-    The ultimate LIGHT controller for the IKEA Bilresa Smart Scroll Wheel via Matter.
+    Light controller for the IKEA Bilresa Smart Scroll Wheel via Matter.
     (NOT for Media/Volume! NOT for the 2-Button Remote!)
     
     VERSION 2.0.0: Implemented optimizations for scrolling and entity selections.
@@ -18,13 +18,16 @@ blueprint:
     - 3 Buttons x 2 Gestures: Choose a specific action for EACH gesture (Double/Hold).
     
     REQUIREMENTS:
-    - ENABLE Sensors: 1,2, 4,5, 7,8
-    - ENABLE Events: 3,6,9
-    - DISABLE Sensors: 3,6,9 (Not needed, keep disabled!)
+
+    - ENABLE Events: 3,6,9 (in section "Events")
+    - ENABLE Sensors: 1,2,4,5,7,8 (in section "Diagnostic")
+    - DISABLE Events: 1,2,4,5,7,8 (in section "Events")
+    - DISABLE Sensors: 3,6,9 (in section "Diagnostic")
     
     HELPER GROUP:
     If controlling multiple lights, please always use a HELPER GROUP!
     Directly controlling multiple entities can cause sync issues.
+    
   domain: automation
   input:
     light_entity:
