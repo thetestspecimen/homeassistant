@@ -30,181 +30,227 @@ blueprint:
     Directly controlling multiple entities can cause sync issues.
     
   domain: automation
-  input:
 
-    # ==========================================================
-    # 0. GLOBAL LIGHT
-    # ==========================================================
-    
+  # ==========================================================
+  # 0. GLOBAL LIGHT
+  # ==========================================================
+  input:
     global_light:
       name: Global Light (Default)
       description: This light will be used for any zone or button that does not have a specific override light set below.
       selector: { entity: { domain: light } }
 
-    # ==========================================================
-    # 1. SCROLL ZONES (SENSORS)
-    # ==========================================================
+    # --- CHANNEL 1 ---
+    header_1:
+      name: "Channel 1"
+      default: ""
+      selector:
+        constant:
+          value: ""
+
+    group_scroll_1:
+      name: "Scroll Wheel Settings"
+      icon: "mdi:rotate-right"
+      collapsed: true
+      input:
+        light_z1:
+          name: Light (Scroll Zone 1) - Optional Override
+          default: ""
+          selector: { entity: { domain: light } }
+        scroll_logic_1_2:
+          name: "Scroll Zone 1 (Sensors 1 & 2)"
+          default: "brightness"
+          selector: &scroll_options
+            select:
+              options:
+                - label: "Brightness (Bright / Dark)"
+                  value: "brightness"
+                - label: "Kelvin (Cool / Warm)"
+                  value: "kelvin"
+                - label: "RGB Color (Rainbow)"
+                  value: "rgb"
+                - label: "Presets (Work / Cozy)"
+                  value: "preset"
+
+    group_button_1:
+      name: "Button Settings"
+      icon: "mdi:gesture-tap"
+      collapsed: true
+      input:
+        light_b1:
+          name: Light (Button 1) - Optional Override
+          default: ""
+          selector: { entity: { domain: light } }
+        btn1_double_bright:
+          name: "Button 1: Double Click Brightness (%)"
+          default: 80
+          selector: { number: { min: 1, max: 100 } }
+        btn1_double_temp:
+          name: "Button 1: Double Click Color Temp (K)"
+          default: 4000
+          selector: { number: { min: 2000, max: 6500 } }
+        btn1_hold_bright:
+          name: "Button 1: Hold Brightness (%)"
+          default: 20
+          selector: { number: { min: 1, max: 100 } }
+        btn1_hold_temp:
+          name: "Button 1: Hold Color Temp (K)"
+          default: 2200
+          selector: { number: { min: 2000, max: 6500 } }
+
+    # --- CHANNEL 2 ---
+    header_2:
+      name: "Channel 2"
+      default: ""
+      selector:
+        constant:
+          value: ""
+
+    group_scroll_2:
+      name: "Scroll Wheel Settings"
+      icon: "mdi:rotate-right"
+      collapsed: true
+      input:
+        light_z2:
+          name: Light (Scroll Zone 2) - Optional Override
+          default: ""
+          selector: { entity: { domain: light } }
+        scroll_logic_4_5:
+          name: "Scroll Zone 2 (Sensors 4 & 5)"
+          default: "kelvin"
+          selector: *scroll_options
+          
+    group_button_2:
+      name: "Button Settings"
+      icon: "mdi:gesture-tap"
+      collapsed: true
+      input:
+        light_b2:
+          name: Light (Button 2) - Optional Override
+          default: ""
+          selector: { entity: { domain: light } }
+        btn2_double_bright:
+          name: "Button 2: Double Click Brightness (%)"
+          default: 80
+          selector: { number: { min: 1, max: 100 } }
+        btn2_double_temp:
+          name: "Button 2: Double Click Color Temp (K)"
+          default: 4000
+          selector: { number: { min: 2000, max: 6500 } }
+        btn2_hold_bright:
+          name: "Button 2: Hold Brightness (%)"
+          default: 20
+          selector: { number: { min: 1, max: 100 } }
+        btn2_hold_temp:
+          name: "Button 2: Hold Color Temp (K)"
+          default: 2200
+          selector: { number: { min: 2000, max: 6500 } }
+
+    # --- CHANNEL 3 ---
+    header_3:
+      name: "Channel 3"
+      default: ""
+      selector:
+        constant:
+          value: ""
+
+    group_scroll_3:
+      name: "Scroll Wheel Settings"
+      icon: "mdi:rotate-right"
+      collapsed: true
+      input:
+        light_z3:
+          name: Light (Scroll Zone 3) - Optional Override
+          default: ""
+          selector: { entity: { domain: light } }
+        scroll_logic_7_8:
+          name: "Scroll Zone 3 (Sensors 7 & 8)"
+          default: "preset"
+          selector: *scroll_options
+
+    group_button_3:
+      name: "Button Settings"
+      icon: "mdi:gesture-tap"
+      collapsed: true
+      input:
+        light_b3:
+          name: Light (Button 3) - Optional Override
+          default: ""
+          selector: { entity: { domain: light } }
+        btn3_double_bright:
+          name: "Button 3: Double Click Brightness (%)"
+          default: 80
+          selector: { number: { min: 1, max: 100 } }
+        btn3_double_temp:
+          name: "Button 3: Double Click Color Temp (K)"
+          default: 4000
+          selector: { number: { min: 2000, max: 6500 } }
+        btn3_hold_bright:
+          name: "Button 3: Hold Brightness (%)"
+          default: 20
+          selector: { number: { min: 1, max: 100 } }
+        btn3_hold_temp:
+          name: "Button 3: Hold Color Temp (K)"
+          default: 2200
+          selector: { number: { min: 2000, max: 6500 } }
     
-    # --- SCROLL ZONE 1 (SENSORS 1 & 2) ---
-
-    light_z1:
-      name: Light (Scroll Zone 1) - Optional Override
+    # ---FINE TUNING---
+    header_tuning:
+      name: "Fine Tuning"
       default: ""
-      selector: { entity: { domain: light } }
-    
-    scroll_logic_1_2:
-      name: "Scroll Zone 1 (Sensors 1 & 2)"
-      default: "brightness"
-      selector: &scroll_options
-        select:
-          options:
-            - label: "Brightness (Bright / Dark)"
-              value: "brightness"
-            - label: "Kelvin (Cool / Warm)"
-              value: "kelvin"
-            - label: "RGB Color (Rainbow)"
-              value: "rgb"
-            - label: "Presets (Work / Cozy)"
-              value: "preset"
+      selector:
+        constant:
+          value: ""
 
-    # --- SCROLL ZONE 2 (SENSORS 4 & 5) ---
+    group_step_size:
+      name: "Step Sizes"
+      icon: "mdi:tune"
+      collapsed: true
+      input:
+        step_pct:
+          name: "Step Size: Brightness (%)"
+          default: 10
+          selector: { number: { min: 1, max: 50, unit_of_measurement: "%" } }
+        step_kelvin:
+          name: "Step Size: Kelvin (K)"
+          default: 400
+          selector: { number: { min: 100, max: 1000, unit_of_measurement: "K" } }
+        step_hue:
+          name: "Step Size: RGB Hue (°)"
+          default: 15
+          selector: { number: { min: 5, max: 90, unit_of_measurement: "°" } }
 
-    light_z2:
-      name: Light (Scroll Zone 2) - Optional Override
-      default: ""
-      selector: { entity: { domain: light } }
+    group_values:
+      name: "Values"
+      icon: "mdi:brightness-6"
+      collapsed: true
+      input:
+        val_bright:
+          name: "Value: Bright (%)"
+          default: 80
+          selector: { number: { min: 1, max: 100 } }
+        val_dim:
+          name: "Value: Dim (%)"
+          default: 20
+          selector: { number: { min: 1, max: 100 } }
+        val_cold:
+          name: "Value: Cool (K)"
+          default: 4000
+          selector: { number: { min: 2000, max: 6500 } }
+        val_warm:
+          name: "Value: Warm (K)"
+          default: 2200
+          selector: { number: { min: 2000, max: 6500 } }
 
-    scroll_logic_4_5:
-      name: "Scroll Zone 2 (Sensors 4 & 5)"
-      default: "kelvin"
-      selector: *scroll_options
-
-    # --- SCROLL ZONE 3 (SENSORS 7 & 8) ---
-
-    light_z3:
-      name: Light (Scroll Zone 3) - Optional Override
-      default: ""
-      selector: { entity: { domain: light } }
-
-    scroll_logic_7_8:
-      name: "Scroll Zone 3 (Sensors 7 & 8)"
-      default: "preset"
-      selector: *scroll_options
-
-    # ==========================================================
-    # 2. BUTTON CONFIGURATION (ATOMIC)
-    # ==========================================================
-    
-    # --- BUTTON 1 (LEFT) ---
-
-    light_b1:
-      name: Light (Button 1) - Optional Override
-      default: ""
-      selector: { entity: { domain: light } }
-
-    btn1_double:
-      name: "Button 1: Double Click Action"
-      default: "set_bright"
-      selector: &double_options
-        select:
-          options:
-            - label: "-> Bright (80%)"
-              value: "set_bright"
-            - label: "-> Cool White (4000K)"
-              value: "set_cold"
-            - label: "-> White (RGB Reset)"
-              value: "set_white"
-            - label: "-> Red (Signal Color)"
-              value: "set_red"
-            - label: "-> No Action"
-              value: "none"
-
-    btn1_hold:
-      name: "Button 1: Hold Action"
-      default: "set_dim"
-      selector: &hold_options
-        select:
-          options:
-            - label: "-> Dimmed (20%)"
-              value: "set_dim"
-            - label: "-> Warm White (2200K)"
-              value: "set_warm"
-            - label: "-> Enable Color (Saturation On)"
-              value: "set_color_on"
-            - label: "-> No Action"
-              value: "none"
-
-    # --- BUTTON 2 (MIDDLE) ---
-    
-    light_b2:
-      name: Light (Button 2) - Optional Override
-      default: ""
-      selector: { entity: { domain: light } }
-
-    btn2_double:
-      name: "Button 2: Double Click Action"
-      default: "set_cold"
-      selector: *double_options
-
-    btn2_hold:
-      name: "Button 2: Hold Action"
-      default: "set_warm"
-      selector: *hold_options
-
-    # --- BUTTON 3 (RIGHT) ---
-
-    light_b3:
-      name: Light (Button 3) - Optional Override
-      default: ""
-      selector: { entity: { domain: light } }
-
-    btn3_double:
-      name: "Button 3: Double Click Action"
-      default: "set_bright"
-      selector: *double_options
-
-    btn3_hold:
-      name: "Button 3: Hold Action"
-      default: "set_dim"
-      selector: *hold_options
-
-    # ==========================================================
-    # 3. FINE TUNING (VALUES)
-    # ==========================================================
-    step_pct:
-      name: "Step Size: Brightness (%)"
-      default: 10
-      selector: { number: { min: 1, max: 50, unit_of_measurement: "%" } }
-    step_kelvin:
-      name: "Step Size: Kelvin (K)"
-      default: 400
-      selector: { number: { min: 100, max: 1000, unit_of_measurement: "K" } }
-    step_hue:
-      name: "Step Size: RGB Hue (°)"
-      default: 15
-      selector: { number: { min: 5, max: 90, unit_of_measurement: "°" } }
-
-    val_bright:
-      name: "Value: Bright (%)"
-      default: 80
-      selector: { number: { min: 1, max: 100 } }
-    val_dim:
-      name: "Value: Dim (%)"
-      default: 20
-      selector: { number: { min: 1, max: 100 } }
-    val_cold:
-      name: "Value: Cool (K)"
-      default: 4000
-      selector: { number: { min: 2000, max: 6500 } }
-    val_warm:
-      name: "Value: Warm (K)"
-      default: 2200
-      selector: { number: { min: 2000, max: 6500 } }
-
-    transition_time:
-      name: "Button Transition Time (Seconds)"
-      default: 0.5
-      selector: { number: { min: 0.0, max: 5.0, step: 0.1 } }
+    group_transition_time:
+      name: "Transition Time"
+      icon: "mdi:clock"
+      collapsed: true
+      input:
+        transition_time:
+          name: "Button Transition Time (Seconds)"
+          default: 0.5
+          selector: { number: { min: 0.0, max: 5.0, step: 0.1 } }
 
     # ==========================================================
     # 4. ENTITY MAPPING
@@ -256,12 +302,18 @@ variables:
   m_sc_3: !input scroll_logic_7_8
   
   # Atomic Button Logic
-  b1_d: !input btn1_double
-  b1_h: !input btn1_hold
-  b2_d: !input btn2_double
-  b2_h: !input btn2_hold
-  b3_d: !input btn3_double
-  b3_h: !input btn3_hold
+  b1_d_b: !input btn1_double_bright
+  b1_d_t: !input btn1_double_temp
+  b1_h_b: !input btn1_hold_bright
+  b1_h_t: !input btn1_hold_temp
+  b2_d_b: !input btn2_double_bright
+  b2_d_t: !input btn2_double_temp
+  b2_h_b: !input btn2_hold_bright
+  b2_h_t: !input btn2_hold_temp
+  b3_d_b: !input btn3_double_bright
+  b3_d_t: !input btn3_double_temp
+  b3_h_b: !input btn3_hold_bright
+  b3_h_t: !input btn3_hold_temp
 
   # Values
   s_p: !input step_pct
@@ -416,33 +468,23 @@ actions:
                      trigger.to_state.attributes.event_type == 'multi_press_2' }}
                 sequence:
                   - variables:
-                      action_code: >
-                        {% if trigger.entity_id == id_e1 %} {{ b1_d }}
-                        {% elif trigger.entity_id == id_e2 %} {{ b2_d }}
-                        {% elif trigger.entity_id == id_e3 %} {{ b3_d }}
+                      set_bri: >
+                        {% if trigger.entity_id == id_e1 %} {{ b1_d_b }}
+                        {% elif trigger.entity_id == id_e2 %} {{ b2_d_b }}
+                        {% elif trigger.entity_id == id_e3 %} {{ b3_d_b }}
+                        {% endif %}
+                      set_temp: >
+                        {% if trigger.entity_id == id_e1 %} {{ b1_d_t }}
+                        {% elif trigger.entity_id == id_e2 %} {{ b2_d_t }}
+                        {% elif trigger.entity_id == id_e3 %} {{ b3_d_t }}
                         {% endif %}
                   # Execute Action
-                  - choose:
-                      - conditions: "{{ action_code == 'set_bright' }}"
-                        sequence:
-                          - action: light.turn_on
-                            target: { entity_id: "{{ target_light }}" }
-                            data: { brightness_pct: "{{ v_bri }}", transition: "{{ t_time }}" }
-                      - conditions: "{{ action_code == 'set_cold' }}"
-                        sequence:
-                          - action: light.turn_on
-                            target: { entity_id: "{{ target_light }}" }
-                            data: { color_temp_kelvin: "{{ v_cold }}", transition: "{{ t_time }}" }
-                      - conditions: "{{ action_code == 'set_white' }}"
-                        sequence:
-                          - action: light.turn_on
-                            target: { entity_id: "{{ target_light }}" }
-                            data: { color_temp_kelvin: 4000, transition: "{{ t_time }}" }
-                      - conditions: "{{ action_code == 'set_red' }}"
-                        sequence:
-                          - action: light.turn_on
-                            target: { entity_id: "{{ target_light }}" }
-                            data: { hs_color: [0, 100], brightness_pct: 80, transition: "{{ t_time }}" }
+                  - action: light.turn_on
+                    target: { entity_id: "{{ target_light }}" }
+                    data:
+                      brightness_pct: "{{ set_bri }}"
+                      color_temp_kelvin: "{{ set_temp }}"
+                      transition: "{{ t_time }}"
 
           # --- 3. HOLD (CUSTOM) ---
           - choose:
@@ -451,28 +493,23 @@ actions:
                      trigger.to_state.attributes.event_type == 'long_press' }}
                 sequence:
                   - variables:
-                      action_code: >
-                        {% if trigger.entity_id == id_e1 %} {{ b1_h }}
-                        {% elif trigger.entity_id == id_e2 %} {{ b2_h }}
-                        {% elif trigger.entity_id == id_e3 %} {{ b3_h }}
+                      set_bri: >
+                        {% if trigger.entity_id == id_e1 %} {{ b1_h_b }}
+                        {% elif trigger.entity_id == id_e2 %} {{ b2_h_b }}
+                        {% elif trigger.entity_id == id_e3 %} {{ b3_h_b }}
+                        {% endif %}
+                      set_temp: >
+                        {% if trigger.entity_id == id_e1 %} {{ b1_h_t }}
+                        {% elif trigger.entity_id == id_e2 %} {{ b2_h_t }}
+                        {% elif trigger.entity_id == id_e3 %} {{ b3_h_t }}
                         {% endif %}
                   # Execute Action
-                  - choose:
-                      - conditions: "{{ action_code == 'set_dim' }}"
-                        sequence:
-                          - action: light.turn_on
-                            target: { entity_id: "{{ target_light }}" }
-                            data: { brightness_pct: "{{ v_dim }}", transition: "{{ t_time }}" }
-                      - conditions: "{{ action_code == 'set_warm' }}"
-                        sequence:
-                          - action: light.turn_on
-                            target: { entity_id: "{{ target_light }}" }
-                            data: { color_temp_kelvin: "{{ v_warm }}", transition: "{{ t_time }}" }
-                      - conditions: "{{ action_code == 'set_color_on' }}"
-                        sequence:
-                          - action: light.turn_on
-                            target: { entity_id: "{{ target_light }}" }
-                            data: { hs_color: [0, 100], brightness_pct: 80, transition: "{{ t_time }}" }
+                  - action: light.turn_on
+                    target: { entity_id: "{{ target_light }}" }
+                    data:
+                      brightness_pct: "{{ set_bri }}"
+                      color_temp_kelvin: "{{ set_temp }}"
+                      transition: "{{ t_time }}"
 
   # V2.0.0+ FIX: Force a 150ms dead-time only after button presses to ignore bouncing, skipping scroll events
   - choose:
