@@ -35,4 +35,4 @@ Add the blueprint to home assistant by going to settings -> Automations & Scenes
 
 or click on the button below to add the blueprint to home assistant (This will take you to the import blueprint page in home assistant)
 
-[![Install Blueprint](https://community-assets.home-assistant.io/original/4X/1/a/1/1a129e306bc6a339cf8a2b9222553254a1909b6f.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://raw.githubusercontent.com/thetestspecimen/homeassistant/refs/heads/main/blueprints/ikea-bilresa-scroll-wheel.yaml)
+[![Install Blueprint](https://community-assets.home-assistant.io/original/4X/1/a/1/1a129e306bc6a339cf8a2b9222553254a1909b6f.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https://github.com/thetestspecimen/homeassistant/blob/main/blueprints/ikea-bilresa-scroll-wheel.yaml)

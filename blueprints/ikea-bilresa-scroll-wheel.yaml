@@ -547,9 +547,5 @@ actions:
                       color_temp_kelvin: "{{ set_temp }}"
                       transition: "{{ t_time }}"
 
-  # V2.0.0+ FIX: Force a 150ms dead-time only after button presses to ignore bouncing, skipping scroll events
-  - choose:
-      - conditions: "{{ trigger.id == 'btn_event' }}"
-        sequence:
-          - delay:
-              milliseconds: 150
+  - delay:
+      milliseconds: 150
