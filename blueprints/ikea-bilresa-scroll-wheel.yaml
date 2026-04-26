@@ -157,17 +157,25 @@ blueprint:
           default: 80
           selector: { number: { min: 1, max: 100 } }
         btn1_double_temp:
-          name: "Button 1: Double Click Colour Temp (K)"
+          name: "Button 1: Double Click Colour Temp"
           default: 4000
-          selector: { number: { min: 2000, max: 6500 } }
+          selector:
+            color_temp:
+              unit: "kelvin"
+              min: 2000
+              max: 6500
         btn1_hold_bright:
           name: "Button 1: Hold Brightness (%)"
           default: 20
           selector: { number: { min: 1, max: 100 } }
         btn1_hold_temp:
-          name: "Button 1: Hold Colour Temp (K)"
+          name: "Button 1: Hold Colour Temp"
           default: 2200
-          selector: { number: { min: 2000, max: 6500 } }
+          selector:
+            color_temp:
+              unit: "kelvin"
+              min: 2000
+              max: 6500
 
     # --- CHANNEL 2 ---
     header_2:
@@ -212,17 +220,25 @@ blueprint:
           default: 80
           selector: { number: { min: 1, max: 100 } }
         btn2_double_temp:
-          name: "Button 2: Double Click Colour Temp (K)"
+          name: "Button 2: Double Click Colour Temp"
           default: 4000
-          selector: { number: { min: 2000, max: 6500 } }
+          selector:
+            color_temp:
+              unit: "kelvin"
+              min: 2000
+              max: 6500
         btn2_hold_bright:
           name: "Button 2: Hold Brightness (%)"
           default: 20
           selector: { number: { min: 1, max: 100 } }
         btn2_hold_temp:
-          name: "Button 2: Hold Colour Temp (K)"
+          name: "Button 2: Hold Colour Temp"
           default: 2200
-          selector: { number: { min: 2000, max: 6500 } }
+          selector:
+            color_temp:
+              unit: "kelvin"
+              min: 2000
+              max: 6500
 
     # --- CHANNEL 3 ---
     header_3:
@@ -267,17 +283,25 @@ blueprint:
           default: 80
           selector: { number: { min: 1, max: 100 } }
         btn3_double_temp:
-          name: "Button 3: Double Click Colour Temp (K)"
+          name: "Button 3: Double Click Colour Temp"
           default: 4000
-          selector: { number: { min: 2000, max: 6500 } }
+          selector:
+            color_temp:
+              unit: "kelvin"
+              min: 2000
+              max: 6500
         btn3_hold_bright:
           name: "Button 3: Hold Brightness (%)"
           default: 20
           selector: { number: { min: 1, max: 100 } }
         btn3_hold_temp:
-          name: "Button 3: Hold Colour Temp (K)"
+          name: "Button 3: Hold Colour Temp"
           default: 2200
-          selector: { number: { min: 2000, max: 6500 } }
+          selector:
+            color_temp:
+              unit: "kelvin"
+              min: 2000
+              max: 6500
     
     # ---FINE TUNING---
     header_tuning:
@@ -316,20 +340,28 @@ blueprint:
           default: 80
           selector: { number: { min: 1, max: 100 } }
         val_cold:
-          name: "Work: Colour Temperature (K)"
+          name: "Work: Colour Temperature"
           description: "The colour temperature value to use for the 'Work' preset"
           default: 4000
-          selector: { number: { min: 2000, max: 6500 } }
+          selector:
+            color_temp:
+              unit: "kelvin"
+              min: 2000
+              max: 6500
         val_dim:
           name: "Cozy: Brightness (%)"
           description: "The brightness value to use for the 'Cozy' preset"
           default: 20
           selector: { number: { min: 1, max: 100 } }
         val_warm:
-          name: "Cozy: Colour Temperature (K)"
+          name: "Cozy: Colour Temperature"
           description: "The colour temperature value to use for the 'Cozy' preset"
           default: 2200
-          selector: { number: { min: 2000, max: 6500 } }
+          selector:
+            color_temp:
+              unit: "kelvin"
+              min: 2000
+              max: 6500
 
     group_transition_time:
       name: "Transition Time"
