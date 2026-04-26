@@ -49,15 +49,15 @@ blueprint:
         event_button_1:
           name: "Channel 1: Button"
           description: "Event: Look for 'Button (3)'"
-          selector: { entity: { domain: event, integration: matter } }
+          selector: { entity: { domain: event, integration: matter, device_class: button } }
         event_button_2:
           name: "Channel 2: Button"
           description: "Event: Look for 'Button (6)'"
-          selector: { entity: { domain: event, integration: matter } }
+          selector: { entity: { domain: event, integration: matter, device_class: button } }
         event_button_3:
           name: "Channel 3: Button"
           description: "Event: Look for 'Button (9)'"
-          selector: { entity: { domain: event, integration: matter } }
+          selector: { entity: { domain: event, integration: matter, device_class: button } }
 
     group_scroll_wheel:
       name: "Scroll Wheel"
@@ -140,13 +140,26 @@ blueprint:
                 - label: "Presets (Work / Cozy)"
                   value: "preset"
 
-    group_button_1:
-      name: "Button Settings"
+    group_button_1_single:
+      name: "Button 1: Single Click (Toggle On/Off)"
       icon: "mdi:gesture-tap"
       collapsed: true
       input:
-        light_b1:
-          name: Light (Button 1) - Optional Override
+        light_b1_single:
+          name: Light (Button 1 Single Click) - Optional Override
+          default: ""
+          selector:
+            entity:
+              domain: light
+              multiple: true
+
+    group_button_1_double:
+      name: "Button 1: Double Click"
+      icon: "mdi:gesture-double-tap"
+      collapsed: true
+      input:
+        light_b1_double:
+          name: Light (Button 1 Double Click) - Optional Override
           default: ""
           selector:
             entity:
@@ -157,13 +170,51 @@ blueprint:
           default: 80
           selector: { number: { min: 1, max: 100 } }
         btn1_double_temp:
-          name: "Button 1: Double Click Colour Temp"
+          name: "Button 1: Double Click Colour Temp (K)"
           default: 4000
           selector:
             color_temp:
               unit: "kelvin"
               min: 2000
               max: 6500
+
+    group_button_1_triple:
+      name: "Button 1: Triple Click"
+      icon: "mdi:gesture-tap"
+      collapsed: true
+      input:
+        light_b1_triple:
+          name: Light (Button 1 Triple Click) - Optional Override
+          default: ""
+          selector:
+            entity:
+              domain: light
+              multiple: true
+        btn1_triple_bright:
+          name: "Button 1: Triple Click Brightness (%)"
+          default: 100
+          selector: { number: { min: 1, max: 100 } }
+        btn1_triple_temp:
+          name: "Button 1: Triple Click Colour Temp (K)"
+          default: 6000
+          selector:
+            color_temp:
+              unit: "kelvin"
+              min: 2000
+              max: 6500
+
+    group_button_1_hold:
+      name: "Button 1: Hold"
+      icon: "mdi:gesture-tap-hold"
+      collapsed: true
+      input:
+        light_b1_hold:
+          name: Light (Button 1 Hold) - Optional Override
+          default: ""
+          selector:
+            entity:
+              domain: light
+              multiple: true
         btn1_hold_bright:
           name: "Button 1: Hold Brightness (%)"
           default: 20
@@ -203,13 +254,26 @@ blueprint:
           default: "kelvin"
           selector: *scroll_options
           
-    group_button_2:
-      name: "Button Settings"
+    group_button_2_single:
+      name: "Button 2: Single Click (Toggle On/Off)"
       icon: "mdi:gesture-tap"
       collapsed: true
       input:
-        light_b2:
-          name: Light (Button 2) - Optional Override
+        light_b2_single:
+          name: Light (Button 2 Single Click) - Optional Override
+          default: ""
+          selector:
+            entity:
+              domain: light
+              multiple: true
+
+    group_button_2_double:
+      name: "Button 2: Double Click"
+      icon: "mdi:gesture-double-tap"
+      collapsed: true
+      input:
+        light_b2_double:
+          name: Light (Button 2 Double Click) - Optional Override
           default: ""
           selector:
             entity:
@@ -220,19 +284,57 @@ blueprint:
           default: 80
           selector: { number: { min: 1, max: 100 } }
         btn2_double_temp:
-          name: "Button 2: Double Click Colour Temp"
+          name: "Button 2: Double Click Colour Temp (K)"
           default: 4000
           selector:
             color_temp:
               unit: "kelvin"
               min: 2000
               max: 6500
+
+    group_button_2_triple:
+      name: "Button 2: Triple Click"
+      icon: "mdi:gesture-tap"
+      collapsed: true
+      input:
+        light_b2_triple:
+          name: Light (Button 2 Triple Click) - Optional Override
+          default: ""
+          selector:
+            entity:
+              domain: light
+              multiple: true
+        btn2_triple_bright:
+          name: "Button 2: Triple Click Brightness (%)"
+          default: 100
+          selector: { number: { min: 1, max: 100 } }
+        btn2_triple_temp:
+          name: "Button 2: Triple Click Colour Temp (K)"
+          default: 6000
+          selector:
+            color_temp:
+              unit: "kelvin"
+              min: 2000
+              max: 6500
+
+    group_button_2_hold:
+      name: "Button 2: Hold"
+      icon: "mdi:gesture-tap-hold"
+      collapsed: true
+      input:
+        light_b2_hold:
+          name: Light (Button 2 Hold) - Optional Override
+          default: ""
+          selector:
+            entity:
+              domain: light
+              multiple: true
         btn2_hold_bright:
           name: "Button 2: Hold Brightness (%)"
           default: 20
           selector: { number: { min: 1, max: 100 } }
         btn2_hold_temp:
-          name: "Button 2: Hold Colour Temp"
+          name: "Button 2: Hold Colour Temp (K)"
           default: 2200
           selector:
             color_temp:
@@ -266,13 +368,26 @@ blueprint:
           default: "preset"
           selector: *scroll_options
 
-    group_button_3:
-      name: "Button Settings"
+    group_button_3_single:
+      name: "Button 3: Single Click (Toggle On/Off)"
       icon: "mdi:gesture-tap"
       collapsed: true
       input:
-        light_b3:
-          name: Light (Button 3) - Optional Override
+        light_b3_single:
+          name: Light (Button 3 Single Click) - Optional Override
+          default: ""
+          selector:
+            entity:
+              domain: light
+              multiple: true
+
+    group_button_3_double:
+      name: "Button 3: Double Click"
+      icon: "mdi:gesture-double-tap"
+      collapsed: true
+      input:
+        light_b3_double:
+          name: Light (Button 3 Double Click) - Optional Override
           default: ""
           selector:
             entity:
@@ -283,19 +398,57 @@ blueprint:
           default: 80
           selector: { number: { min: 1, max: 100 } }
         btn3_double_temp:
-          name: "Button 3: Double Click Colour Temp"
+          name: "Button 3: Double Click Colour Temp (K)"
           default: 4000
           selector:
             color_temp:
               unit: "kelvin"
               min: 2000
               max: 6500
+
+    group_button_3_triple:
+      name: "Button 3: Triple Click"
+      icon: "mdi:gesture-tap"
+      collapsed: true
+      input:
+        light_b3_triple:
+          name: Light (Button 3 Triple Click) - Optional Override
+          default: ""
+          selector:
+            entity:
+              domain: light
+              multiple: true
+        btn3_triple_bright:
+          name: "Button 3: Triple Click Brightness (%)"
+          default: 100
+          selector: { number: { min: 1, max: 100 } }
+        btn3_triple_temp:
+          name: "Button 3: Triple Click Colour Temp (K)"
+          default: 6000
+          selector:
+            color_temp:
+              unit: "kelvin"
+              min: 2000
+              max: 6500
+
+    group_button_3_hold:
+      name: "Button 3: Hold"
+      icon: "mdi:gesture-tap-hold"
+      collapsed: true
+      input:
+        light_b3_hold:
+          name: Light (Button 3 Hold) - Optional Override
+          default: ""
+          selector:
+            entity:
+              domain: light
+              multiple: true
         btn3_hold_bright:
           name: "Button 3: Hold Brightness (%)"
           default: 20
           selector: { number: { min: 1, max: 100 } }
         btn3_hold_temp:
-          name: "Button 3: Hold Colour Temp"
+          name: "Button 3: Hold Colour Temp (K)"
           default: 2200
           selector:
             color_temp:
@@ -340,7 +493,7 @@ blueprint:
           default: 80
           selector: { number: { min: 1, max: 100 } }
         val_cold:
-          name: "Work: Colour Temperature"
+          name: "Work: Colour Temperature (K)"
           description: "The colour temperature value to use for the 'Work' preset"
           default: 4000
           selector:
@@ -354,7 +507,7 @@ blueprint:
           default: 20
           selector: { number: { min: 1, max: 100 } }
         val_warm:
-          name: "Cozy: Colour Temperature"
+          name: "Cozy: Colour Temperature (K)"
           description: "The colour temperature value to use for the 'Cozy' preset"
           default: 2200
           selector:
@@ -381,9 +534,18 @@ variables:
   l_z1: !input light_z1
   l_z2: !input light_z2
   l_z3: !input light_z3
-  l_b1: !input light_b1
-  l_b2: !input light_b2
-  l_b3: !input light_b3
+  l_b1_s: !input light_b1_single
+  l_b1_d: !input light_b1_double
+  l_b1_t: !input light_b1_triple
+  l_b1_h: !input light_b1_hold
+  l_b2_s: !input light_b2_single
+  l_b2_d: !input light_b2_double
+  l_b2_t: !input light_b2_triple
+  l_b2_h: !input light_b2_hold
+  l_b3_s: !input light_b3_single
+  l_b3_d: !input light_b3_double
+  l_b3_t: !input light_b3_triple
+  l_b3_h: !input light_b3_hold
   
   # Scroll Logic
   m_sc_1: !input scroll_logic_1_2
@@ -393,14 +555,20 @@ variables:
   # Atomic Button Logic
   b1_d_b: !input btn1_double_bright
   b1_d_t: !input btn1_double_temp
+  b1_t_b: !input btn1_triple_bright
+  b1_t_t: !input btn1_triple_temp
   b1_h_b: !input btn1_hold_bright
   b1_h_t: !input btn1_hold_temp
   b2_d_b: !input btn2_double_bright
   b2_d_t: !input btn2_double_temp
+  b2_t_b: !input btn2_triple_bright
+  b2_t_t: !input btn2_triple_temp
   b2_h_b: !input btn2_hold_bright
   b2_h_t: !input btn2_hold_temp
   b3_d_b: !input btn3_double_bright
   b3_d_t: !input btn3_double_temp
+  b3_t_b: !input btn3_triple_bright
+  b3_t_t: !input btn3_triple_temp
   b3_h_b: !input btn3_hold_bright
   b3_h_t: !input btn3_hold_temp
 
@@ -527,14 +695,14 @@ actions:
   - choose:
       - conditions: "{{ trigger.id == 'btn_event' }}"
         sequence:
-          - variables:
-              target_light: "{{ l_b1 if trigger.entity_id == id_e1 and l_b1 else l_b2 if trigger.entity_id == id_e2 and l_b2 else l_b3 if trigger.entity_id == id_e3 and l_b3 else global_l }}"
           # --- 1. SINGLE CLICK (ALWAYS TOGGLE) ---
           - choose:
               - conditions: >
                   {{ trigger.to_state.attributes.event_type is defined and 
                      trigger.to_state.attributes.event_type == 'multi_press_1' }}
                 sequence:
+                  - variables:
+                      target_light: "{{ l_b1_s if trigger.entity_id == id_e1 and l_b1_s else l_b2_s if trigger.entity_id == id_e2 and l_b2_s else l_b3_s if trigger.entity_id == id_e3 and l_b3_s else global_l }}"
                   - action: light.toggle
                     target: { entity_id: "{{ target_light }}" }
                     data: { transition: "{{ t_time }}" }
@@ -546,6 +714,7 @@ actions:
                      trigger.to_state.attributes.event_type == 'multi_press_2' }}
                 sequence:
                   - variables:
+                      target_light: "{{ l_b1_d if trigger.entity_id == id_e1 and l_b1_d else l_b2_d if trigger.entity_id == id_e2 and l_b2_d else l_b3_d if trigger.entity_id == id_e3 and l_b3_d else global_l }}"
                       set_bri: "{{ b1_d_b if trigger.entity_id == id_e1 else b2_d_b if trigger.entity_id == id_e2 else b3_d_b }}"
                       set_temp: "{{ b1_d_t if trigger.entity_id == id_e1 else b2_d_t if trigger.entity_id == id_e2 else b3_d_t }}"
                   # Execute Action
@@ -556,13 +725,32 @@ actions:
                       color_temp_kelvin: "{{ set_temp }}"
                       transition: "{{ t_time }}"
 
-          # --- 3. HOLD (CUSTOM) ---
+          # --- 3. TRIPLE CLICK (CUSTOM) ---
+          - choose:
+              - conditions: >
+                  {{ trigger.to_state.attributes.event_type is defined and 
+                     trigger.to_state.attributes.event_type == 'multi_press_3' }}
+                sequence:
+                  - variables:
+                      target_light: "{{ l_b1_t if trigger.entity_id == id_e1 and l_b1_t else l_b2_t if trigger.entity_id == id_e2 and l_b2_t else l_b3_t if trigger.entity_id == id_e3 and l_b3_t else global_l }}"
+                      set_bri: "{{ b1_t_b if trigger.entity_id == id_e1 else b2_t_b if trigger.entity_id == id_e2 else b3_t_b }}"
+                      set_temp: "{{ b1_t_t if trigger.entity_id == id_e1 else b2_t_t if trigger.entity_id == id_e2 else b3_t_t }}"
+                  # Execute Action
+                  - action: light.turn_on
+                    target: { entity_id: "{{ target_light }}" }
+                    data:
+                      brightness_pct: "{{ set_bri }}"
+                      color_temp_kelvin: "{{ set_temp }}"
+                      transition: "{{ t_time }}"
+
+          # --- 4. HOLD (CUSTOM) ---
           - choose:
               - conditions: >
                   {{ trigger.to_state.attributes.event_type is defined and 
                      trigger.to_state.attributes.event_type == 'long_press' }}
                 sequence:
                   - variables:
+                      target_light: "{{ l_b1_h if trigger.entity_id == id_e1 and l_b1_h else l_b2_h if trigger.entity_id == id_e2 and l_b2_h else l_b3_h if trigger.entity_id == id_e3 and l_b3_h else global_l }}"
                       set_bri: "{{ b1_h_b if trigger.entity_id == id_e1 else b2_h_b if trigger.entity_id == id_e2 else b3_h_b }}"
                       set_temp: "{{ b1_h_t if trigger.entity_id == id_e1 else b2_h_t if trigger.entity_id == id_e2 else b3_h_t }}"
                   # Execute Action
