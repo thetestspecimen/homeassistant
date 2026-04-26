@@ -99,7 +99,10 @@ blueprint:
     global_light:
       name: Global Light - Default [REQUIRED]
       description: This light will be used for any zone or button that does not have a specific override light set below.
-      selector: { entity: { domain: light } }
+      selector:
+        entity:
+          domain: light
+          multiple: true
 
     # --- CHANNEL 1 ---
     header_1:
@@ -117,7 +120,10 @@ blueprint:
         light_z1:
           name: Light (Scroll - Channel 1) - Optional Override
           default: ""
-          selector: { entity: { domain: light } }
+          selector:
+            entity:
+              domain: light
+              multiple: true
         scroll_logic_1_2:
           name: "Scroll - Channel 1"
           description: "Sensors 1 & 2"
@@ -142,7 +148,10 @@ blueprint:
         light_b1:
           name: Light (Button 1) - Optional Override
           default: ""
-          selector: { entity: { domain: light } }
+          selector:
+            entity:
+              domain: light
+              multiple: true
         btn1_double_bright:
           name: "Button 1: Double Click Brightness (%)"
           default: 80
@@ -176,7 +185,10 @@ blueprint:
         light_z2:
           name: Light (Scroll - Channel 2) - Optional Override
           default: ""
-          selector: { entity: { domain: light } }
+          selector:
+            entity:
+              domain: light
+              multiple: true
         scroll_logic_4_5:
           name: "Scroll - Channel 2"
           description: "Sensors 4 & 5"
@@ -191,7 +203,10 @@ blueprint:
         light_b2:
           name: Light (Button 2) - Optional Override
           default: ""
-          selector: { entity: { domain: light } }
+          selector:
+            entity:
+              domain: light
+              multiple: true
         btn2_double_bright:
           name: "Button 2: Double Click Brightness (%)"
           default: 80
@@ -225,7 +240,10 @@ blueprint:
         light_z3:
           name: Light (Scroll - Channel 3) - Optional Override
           default: ""
-          selector: { entity: { domain: light } }
+          selector:
+            entity:
+              domain: light
+              multiple: true  
         scroll_logic_7_8:
           name: "Scroll - Channel 3"
           description: "Sensors 7 & 8"
@@ -240,7 +258,10 @@ blueprint:
         light_b3:
           name: Light (Button 3) - Optional Override
           default: ""
-          selector: { entity: { domain: light } }
+          selector:
+            entity:
+              domain: light
+              multiple: true
         btn3_double_bright:
           name: "Button 3: Double Click Brightness (%)"
           default: 80
@@ -414,20 +435,9 @@ actions:
         sequence:
           # Setup Logic
           - variables:
-              target_light: >
-                {% if 'sc_1' in trigger.id %} {{ l_z1 if l_z1 else global_l }}
-                {% elif 'sc_2' in trigger.id %} {{ l_z2 if l_z2 else global_l }}
-                {% elif 'sc_3' in trigger.id %} {{ l_z3 if l_z3 else global_l }}
-                {% endif %}
-              direction: >
-                {% if '_up' in trigger.id %} 1
-                {% else %} -1
-                {% endif %}
-              active_func: >
-                {% if 'sc_1' in trigger.id %} {{ m_sc_1 }}
-                {% elif 'sc_2' in trigger.id %} {{ m_sc_2 }}
-                {% elif 'sc_3' in trigger.id %} {{ m_sc_3 }}
-                {% endif %}
+              target_light: "{{ l_z1 if 'sc_1' in trigger.id and l_z1 else l_z2 if 'sc_2' in trigger.id and l_z2 else l_z3 if 'sc_3' in trigger.id and l_z3 else global_l }}"
+              direction: "{{ 1 if '_up' in trigger.id else -1 }}"
+              active_func: "{{ m_sc_1 if 'sc_1' in trigger.id else m_sc_2 if 'sc_2' in trigger.id else m_sc_3 }}"
           
           # Execution
           - choose:
@@ -445,10 +455,12 @@ actions:
                     target: { entity_id: "{{ target_light }}" }
                     data:
                       color_temp_kelvin: >
-                        {% set current = state_attr(target_light, 'color_temp_kelvin') | int(default=3000) %}
+                        {% set entities = expand(target_light) | map(attribute='entity_id') | list %}
+                        {% set first_light = entities[0] if entities else 'light.none' %}
+                        {% set current = state_attr(first_light, 'color_temp_kelvin') | int(default=3000) %}
                         {% set step = s_k | int(default=400) %}
-                        {% set min_k = state_attr(target_light, 'min_color_temp_kelvin') | int(default=2000) %}
-                        {% set max_k = state_attr(target_light, 'max_color_temp_kelvin') | int(default=6500) %}
+                        {% set min_k = state_attr(first_light, 'min_color_temp_kelvin') | int(default=2000) %}
+                        {% set max_k = state_attr(first_light, 'max_color_temp_kelvin') | int(default=6500) %}
                         {% if direction == 1 %} {{ ([current + step, max_k] | min) | int }}
                         {% else %} {{ ([current - step, min_k] | max) | int }} {% endif %}
                       transition: 0
@@ -459,7 +471,9 @@ actions:
                     target: { entity_id: "{{ target_light }}" }
                     data:
                       hs_color: >
-                        {% set current_hs = state_attr(target_light, 'hs_color') %}
+                        {% set entities = expand(target_light) | map(attribute='entity_id') | list %}
+                        {% set first_light = entities[0] if entities else 'light.none' %}
+                        {% set current_hs = state_attr(first_light, 'hs_color') %}
                         {% set h = current_hs[0] | float(default=0) if current_hs is not none else 0 %}
                         {% set s = current_hs[1] | float(default=100) if current_hs is not none else 100 %}
                         {% set step = s_h | float(default=15) %}
@@ -482,11 +496,7 @@ actions:
       - conditions: "{{ trigger.id == 'btn_event' }}"
         sequence:
           - variables:
-              target_light: >
-                {% if trigger.entity_id == id_e1 %} {{ l_b1 if l_b1 else global_l }}
-                {% elif trigger.entity_id == id_e2 %} {{ l_b2 if l_b2 else global_l }}
-                {% elif trigger.entity_id == id_e3 %} {{ l_b3 if l_b3 else global_l }}
-                {% endif %}
+              target_light: "{{ l_b1 if trigger.entity_id == id_e1 and l_b1 else l_b2 if trigger.entity_id == id_e2 and l_b2 else l_b3 if trigger.entity_id == id_e3 and l_b3 else global_l }}"
           # --- 1. SINGLE CLICK (ALWAYS TOGGLE) ---
           - choose:
               - conditions: >
@@ -504,16 +514,8 @@ actions:
                      trigger.to_state.attributes.event_type == 'multi_press_2' }}
                 sequence:
                   - variables:
-                      set_bri: >
-                        {% if trigger.entity_id == id_e1 %} {{ b1_d_b }}
-                        {% elif trigger.entity_id == id_e2 %} {{ b2_d_b }}
-                        {% elif trigger.entity_id == id_e3 %} {{ b3_d_b }}
-                        {% endif %}
-                      set_temp: >
-                        {% if trigger.entity_id == id_e1 %} {{ b1_d_t }}
-                        {% elif trigger.entity_id == id_e2 %} {{ b2_d_t }}
-                        {% elif trigger.entity_id == id_e3 %} {{ b3_d_t }}
-                        {% endif %}
+                      set_bri: "{{ b1_d_b if trigger.entity_id == id_e1 else b2_d_b if trigger.entity_id == id_e2 else b3_d_b }}"
+                      set_temp: "{{ b1_d_t if trigger.entity_id == id_e1 else b2_d_t if trigger.entity_id == id_e2 else b3_d_t }}"
                   # Execute Action
                   - action: light.turn_on
                     target: { entity_id: "{{ target_light }}" }
@@ -529,16 +531,8 @@ actions:
                      trigger.to_state.attributes.event_type == 'long_press' }}
                 sequence:
                   - variables:
-                      set_bri: >
-                        {% if trigger.entity_id == id_e1 %} {{ b1_h_b }}
-                        {% elif trigger.entity_id == id_e2 %} {{ b2_h_b }}
-                        {% elif trigger.entity_id == id_e3 %} {{ b3_h_b }}
-                        {% endif %}
-                      set_temp: >
-                        {% if trigger.entity_id == id_e1 %} {{ b1_h_t }}
-                        {% elif trigger.entity_id == id_e2 %} {{ b2_h_t }}
-                        {% elif trigger.entity_id == id_e3 %} {{ b3_h_t }}
-                        {% endif %}
+                      set_bri: "{{ b1_h_b if trigger.entity_id == id_e1 else b2_h_b if trigger.entity_id == id_e2 else b3_h_b }}"
+                      set_temp: "{{ b1_h_t if trigger.entity_id == id_e1 else b2_h_t if trigger.entity_id == id_e2 else b3_h_t }}"
                   # Execute Action
                   - action: light.turn_on
                     target: { entity_id: "{{ target_light }}" }
