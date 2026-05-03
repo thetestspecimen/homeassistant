@@ -21,11 +21,6 @@ blueprint:
     - DISABLE Events: 1,2,4,5,7,8 (in section "Events")
     - DISABLE Sensors: 3,6,9 (in section "Diagnostic")
     
-    HELPER GROUP:
-
-    If controlling multiple lights, please always use a HELPER GROUP!
-    Directly controlling multiple entities can cause sync issues.
-    
   homeassistant:
     min_version: "2024.6.0"
   domain: automation
@@ -591,12 +586,13 @@ variables:
   v_dim: !input val_dim
   v_cold: !input val_cold
   v_warm: !input val_warm
+  t_time: !input transition_time
 
   # Event IDs
   id_e1: !input event_button_1
   id_e2: !input event_button_2
   id_e3: !input event_button_3
-  t_time: !input transition_time
+
 
 triggers:
   # Scroll 1
