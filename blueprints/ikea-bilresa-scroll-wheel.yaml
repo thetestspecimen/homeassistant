@@ -35,7 +35,7 @@ blueprint:
   # ==========================================================
   input:
     # --- ENTITY MAPPING ---
-    header_0:
+    header_entity_mapping:
       name: "Entity Mapping [REQUIRED]"
       description: "Select the entities for the scroll wheel and buttons"
       default: ""
@@ -51,15 +51,20 @@ blueprint:
         event_button_1:
           name: "Channel 1: Button"
           description: "Event: Look for 'Button (3)'"
-          selector: { entity: { domain: event, integration: matter, device_class: button } }
+          selector: &button_filter
+            entity:
+              filter:
+                domain: event
+                integration: matter
+                device_class: button
         event_button_2:
           name: "Channel 2: Button"
           description: "Event: Look for 'Button (6)'"
-          selector: { entity: { domain: event, integration: matter, device_class: button } }
+          selector: *button_filter
         event_button_3:
           name: "Channel 3: Button"
           description: "Event: Look for 'Button (9)'"
-          selector: { entity: { domain: event, integration: matter, device_class: button } }
+          selector: *button_filter
 
     group_scroll_wheel:
       name: "Scroll Wheel"
@@ -69,29 +74,33 @@ blueprint:
         sensor_1:
           name: "Channel 1: Scroll forwards"
           description: "Sensor: Look for 'Current switch position (1)'"
-          selector: { entity: { domain: sensor, integration: matter } }
+          selector: &scroll_filter
+            entity:
+              filter:
+                domain: sensor
+                integration: matter
         sensor_2:
           name: "Channel 1: Scroll backwards"
           description: "Sensor: Look for 'Current switch position (2)'"
-          selector: { entity: { domain: sensor, integration: matter } }
+          selector: *scroll_filter
         sensor_4:
           name: "Channel 2: Scroll forwards"
           description: "Sensor: Look for 'Current switch position (4)'"
-          selector: { entity: { domain: sensor, integration: matter } }
+          selector: *scroll_filter
         sensor_5:
           name: "Channel 2: Scroll backwards"
           description: "Sensor: Look for 'Current switch position (5)'"
-          selector: { entity: { domain: sensor, integration: matter } }
+          selector: *scroll_filter
         sensor_7:
           name: "Channel 3: Scroll forwards"
           description: "Sensor: Look for 'Current switch position (7)'"
-          selector: { entity: { domain: sensor, integration: matter } }
+          selector: *scroll_filter
         sensor_8:
           name: "Channel 3: Scroll backwards"
           description: "Sensor: Look for 'Current switch position (8)'"
-          selector: { entity: { domain: sensor, integration: matter } }
+          selector: *scroll_filter
 
-    header_00:
+    header_default_light:
       name: "Default Light"
       default: ""
       selector:
