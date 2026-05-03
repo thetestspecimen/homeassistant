@@ -26,6 +26,8 @@ blueprint:
     If controlling multiple lights, please always use a HELPER GROUP!
     Directly controlling multiple entities can cause sync issues.
     
+  homeassistant:
+    min_version: "2024.6.0"
   domain: automation
 
   # ==========================================================
