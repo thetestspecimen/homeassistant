@@ -4,22 +4,25 @@ blueprint:
   source_url: "https://github.com/thetestspecimen/homeassistant/blob/main/blueprints/ikea-bilresa-scroll-wheel.yaml"
   description: |
     
-    Light controller for the IKEA Bilresa Smart Scroll Wheel via Matter.
-    (Cannot be used with the 2-Button Remote!)
-    
-    VARIABLES:
-    - 3 Scroll Zones: Choose the function (Brightness, Kelvin, RGB, Presets).
-    - 3 Buttons x 2 Gestures: Choose a specific action for EACH gesture (double click / hold).
+    # 💡 Light controller 💡
+    ## IKEA BILRESA - Smart Scroll Wheel utilising Matter over Thread
 
-    Note: single click will always turn the light on or off (toggle).
+
+    ## VARIABLES:
+    - 3 Scroll Zones: Choose the function (Brightness, Kelvin, RGB, Presets).
+    - 3 Buttons x 3 Gestures: Choose a specific action for EACH gesture (double click / triple click / hold).
+
+    ***Note:*** single click will always toggle the light on or off.
     
-    REQUIREMENTS:
+    ## REQUIREMENTS:
 
     For optimal behavior, the following settings must be applied:
     - ENABLE Events: 3,6,9 (in section "Events")
     - ENABLE Sensors: 1,2,4,5,7,8 (in section "Diagnostic")
     - DISABLE Events: 1,2,4,5,7,8 (in section "Events")
     - DISABLE Sensors: 3,6,9 (in section "Diagnostic")
+
+    ***Note:*** this blueprint cannot be used with the BILRESA 2-Button Remote.
     
   homeassistant:
     min_version: "2024.6.0"
